@@ -93,8 +93,7 @@ export default function StrategyDashboard() {
                             onClick={() => setStrategy(s)}
                         >
                             <span>
-                                {typeof strategyIcons[s] === 'string' &&
-                                    strategyIcons[s].match(/\.(png|jpe?g|svg)$/i) ? (
+                                {typeof strategyIcons[s] === 'string' ? (
                                     <img src={strategyIcons[s]} alt={`${s} icon`} className="w-5 h-5" />
                                 ) : (
                                     strategyIcons[s]
