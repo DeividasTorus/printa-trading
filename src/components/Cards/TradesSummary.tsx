@@ -78,29 +78,28 @@ export default function TradesSummary() {
     <div className="bg-white rounded-xl shadow px-6 py-5 overflow-x-auto">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-md font-semibold">Active Positions</h3>
-        <button className="text-sm px-3 py-1 border rounded text-gray-600 hover:bg-gray-50">
-          This Year ▾
-        </button>
+         <select className="px-4 text-gray-500 py-2 border rounded-lg text-sm mb-1">
+          <option>This Year</option>
+        </select>
       </div>
       <table className="w-full text-sm text-left border-separate border-spacing-y-1">
         <thead>
           <tr className="text-gray-500 bg-gray-100">
-            <th className="py-2 px-4 rounded-l-md">Name</th>
-            <th className="py-2 px-4">Comparison S&P</th>
-            <th className="py-2 px-4">Risk-Free Rate</th>
-            <th className="py-2 px-4 rounded-r-md">Total (NQ and ES) All Trades</th>
+            <th className="py-3 px-4 rounded-l-md">Name</th>
+            <th className="py-3 px-4">Comparison S&P</th>
+            <th className="py-3 px-4">Risk-Free Rate</th>
+            <th className="py-3 px-4 rounded-r-md">Total (NQ and ES) All Trades</th>
           </tr>
         </thead>
         <tbody>
           {data.map((row, index) => (
             <tr
               key={row.label}
-              className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} text-gray-700`}
             >
-              <td className="px-4 py-3 font-medium">{row.label}</td>
-              <td className="px-4 py-3">{row.comparison ?? '-'}</td>
-              <td className="px-4 py-3">{row.riskFreeRate ?? '-'}</td>
-              <td className="px-4 py-3">{row.total ?? '-'}</td>
+              <td className="px-4 py-3 font-medium border-b-2">{row.label}</td>
+              <td className="px-4 py-3 border-b-2">{row.comparison ?? '-'}</td>
+              <td className="px-4 py-3 border-b-2">{row.riskFreeRate ?? '-'}</td>
+              <td className="px-4 py-3 border-b-2">{row.total ?? '-'}</td>
             </tr>
           ))}
         </tbody>

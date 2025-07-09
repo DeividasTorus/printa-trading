@@ -13,13 +13,13 @@ export default function CumulativePnLCard() {
 
   return (
     <>
-      <div className="bg-white text-center p-6 rounded shadow flex flex-col items-center justify-center h-full">
+      <div className="bg-white text-center p-6 rounded-xl shadow flex flex-col items-center justify-center h-full">
         <p className="text-xl font-bold text-gray-600 mb-4 max-w-xs">
           For calculating cumulative PnL, please provide your starting balance
         </p>
         <button
           onClick={() => setShowModal(true)}
-          className="bg-purple-600 text-white rounded-lg px-4 py-2"
+          className="bg-[#480090] text-white rounded-lg px-4 py-2 hover:bg-purple-700"
         >
           Set Balance
         </button>
@@ -31,7 +31,7 @@ export default function CumulativePnLCard() {
         footer={
           <button
             onClick={handleSave}
-            className="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition"
+            className="w-full bg-[#480090] text-white py-2 rounded-lg hover:bg-purple-700 transition"
           >
             Save
           </button>

@@ -37,7 +37,7 @@ export default function CumulativePnLChart({ data }: Props) {
           <Tooltip />
           <Bar
             dataKey="cumulative"
-            fill="#8b5cf6"
+            fill="#480090"
             radius={[4, 4, 0, 0]}
             barSize={40}
           />

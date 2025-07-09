@@ -6,6 +6,7 @@ import {
     YAxis,
     ResponsiveContainer,
     Tooltip,
+    ReferenceLine
 } from 'recharts';
 import { DateRange, Range, RangeKeyDict } from 'react-date-range';
 import 'react-date-range/dist/styles.css';
@@ -120,7 +121,6 @@ export default function YearlyOverviewScreen() {
         return () => clearTimeout(timer);
     }, []);
 
-    // Filter by selected year range
     const filtered = mockOverview.filter((item) => {
         const yearDate = new Date(`${item.year}-01-01`);
         const start = dateRange[0].startDate!;
@@ -133,7 +133,6 @@ export default function YearlyOverviewScreen() {
         pnl: item.pnl,
     }));
 
-    // Aggregate stats
     const statsMap: { [key: string]: number } = {};
     const changeMap: { [key: string]: string } = {};
 
@@ -163,12 +162,11 @@ export default function YearlyOverviewScreen() {
 
     return (
         <div className="px-6 lg:px-10 py-8 bg-gray-100">
-            {/* Picker */}
-            <div className="relative mb-6 w-full flex justify-end">
+            <div className="relative mb-1 w-full flex justify-end">
                 <div className="relative inline-block">
                     <button
                         onClick={() => setShowPicker(!showPicker)}
-                        className="bg-white border px-4 py-2 rounded shadow-sm text-sm font-medium hover:bg-gray-50"
+                        className="px-4 text-gray-500 py-2 border rounded-lg text-sm mb-1 bg-white hover:bg-gray-50"
                     >
                         {dateRange[0].startDate?.toLocaleDateString()} – {dateRange[0].endDate?.toLocaleDateString()}
                     </button>
@@ -186,7 +184,6 @@ export default function YearlyOverviewScreen() {
                                 direction="horizontal"
                                 rangeColors={['#8b5cf6']}
                             />
-
                             <div className="flex justify-end gap-3 mt-4">
                                 <button
                                     onClick={() => setShowPicker(false)}
@@ -215,18 +212,17 @@ export default function YearlyOverviewScreen() {
                     <div className="bg-white rounded-xl shadow p-6 flex flex-col lg:flex-row gap-6 mb-8">
                         <div className="w-full lg:w-[100%]">
                             <h2 className="text-md font-semibold mb-4">Yearly PnL</h2>
-                            <ResponsiveContainer width="100%" height={250}>
+                            <ResponsiveContainer width="100%" height={440}>
                                 <BarChart data={yearlyData}>
                                     <XAxis dataKey="year" />
-                                    <YAxis />
+                                    <YAxis domain={['dataMin', 'dataMax']} />
                                     <Tooltip />
-                                    <Bar dataKey="pnl" fill="#6b21a8" radius={[4, 4, 0, 0]} />
+                                    <ReferenceLine y={0} stroke="#000" />
+                                    <Bar dataKey="pnl" fill="#480090" radius={[4, 4, 0, 0]} />
                                 </BarChart>
                             </ResponsiveContainer>
                         </div>
-
                         <div className="w-full lg:w-[50%]">
-                            <h2 className="text-md font-semibold mb-4">Total Overview</h2>
                             <StatsSummary
                                 title="Annual Totals"
                                 stats={stats}
@@ -234,17 +230,19 @@ export default function YearlyOverviewScreen() {
                                 rows={rows}
                                 showCards={true}
                                 showPieChart={true}
+                                screenType="yearly"
                             />
                         </div>
                     </div>
+
                     <TradesSummary />
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 bg-gray-100 pt-8">
                         <CumulativePnLChart data={filtered} />
                         <MonteCarloSimulationChart data={filtered} />
-
                     </div>
                 </>
             )}
         </div>
     );
 }
+

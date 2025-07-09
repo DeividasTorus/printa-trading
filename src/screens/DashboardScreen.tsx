@@ -1,7 +1,7 @@
 import StrategyDashboard from '../components/Cards/StrategyDashboard';
 import CumulativePnLCard from '../components/Cards/CumulativePnLCard';
 import PortfolioGraph from '../components/Charts/PortfolioGraph';
-import ActivePositionsTable from '../components/Tables/ActivePositionsTable';
+import ActivePositionsTable from '../components/Cards/ActivePositionsTable';
 
 export default function DashboardScreen() {
     return (

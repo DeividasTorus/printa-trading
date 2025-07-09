@@ -61,28 +61,36 @@ const OrderHistory = () => {
     };
 
     return (
-        <div className="p-6 bg-gray-50 min-h-screen text-sm">
-            <div className="flex mb-6 justify-end items-center">
-                <div className="flex items-center space-x-2">
-                    {['Today', 'Yesterday', 'Week', 'Month', 'Quarter', 'Year'].map((label) => (
-                        <button
-                            key={label}
-                            onClick={() => handleFilterClick(label)}
-                            className={`px-4 py-2 rounded-md border ${label === selectedFilter
-                                ? 'bg-violet-100 text-violet-600 border-violet-300'
-                                : 'text-gray-500 border-gray-200'
-                                }`}
-                        >
-                            {label}
-                        </button>
-                    ))}
-                    <select className="border border-gray-300 px-3 py-2 rounded-md text-gray-700 bg-white">
+        <div className="p-6 bg-gray-100 min-h-screen text-sm">
+            <div className="flex mb-2 justify-end items-center">
+                <div className="flex items-center">
+                    {['Today', 'Yesterday', 'Week', 'Month', 'Quarter', 'Year'].map((label, index, arr) => {
+                        const isSelected = label === selectedFilter;
+                        const baseClasses = 'px-6 py-2 border';
+                        const selectedClasses = 'bg-[#F3E7FF] text-[#6C32A6] border-[#6C32A6]';
+                        const unselectedClasses = 'text-gray-400 border-gray-200 bg-[#FCFCFC]';
+                        const cornerClasses =
+                            label === 'Today' ? 'rounded-l-md' :
+                                label === 'Year' ? 'rounded-r-md' :
+                                    '';
+
+                        return (
+                            <button
+                                key={label}
+                                onClick={() => handleFilterClick(label)}
+                                className={`${baseClasses} ${isSelected ? selectedClasses : unselectedClasses} ${cornerClasses}`}
+                            >
+                                {label}
+                            </button>
+                        );
+                    })}
+                    <select className="px-10 ml-3 text-gray-500 py-[9px] border rounded-lg text-sm">
                         <option>Select Period</option>
                     </select>
                 </div>
             </div>
 
-            <div className="bg-white shadow-md rounded-md overflow-x-auto p-5">
+            <div className="bg-white shadow-md rounded-xl overflow-x-auto p-5">
                 <h2 className="text-2xl font-semibold text-gray-800 mb-4">Order History</h2>
                 {loading ? (
                     <div className="p-6 text-gray-400">Loading orders...</div>

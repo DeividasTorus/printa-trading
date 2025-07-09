@@ -24,7 +24,7 @@ export default function DailyPnLChart({ strategy, data }: Props) {
   return (
     <div className="w-full">
       <h2 className="text-lg font-semibold mb-2">Daily PnL - {strategy}</h2>
-      <ResponsiveContainer width="100%" height={350}>
+      <ResponsiveContainer width="100%" height={380}>
         <BarChart data={data}>
           <XAxis dataKey="day" />
           <YAxis />
@@ -34,7 +34,7 @@ export default function DailyPnLChart({ strategy, data }: Props) {
             {data.map((entry, index) => (
               <Cell
                 key={`cell-${index}`}
-                fill={entry.profit >= 0 ? '#8b5cf6' : '#c084fc'}
+                fill={entry.profit >= 0 ? '#480090' : '#984FE0'}
               />
             ))}
           </Bar>

@@ -18,7 +18,7 @@ export default function NavigationTabs() {
               to={tab.path}
               className={({ isActive }) =>
                 `pb-3 border-b-2 transition ${isActive
-                  ? 'text-purple-600 border-purple-600'
+                  ? 'text-[#480090] border-none'
                   : 'border-transparent hover:text-gray-700'
                 }`
               }

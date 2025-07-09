@@ -48,7 +48,7 @@ export default function PortfolioGraph() {
   }, []);
 
   return (
-    <div className="bg-white p-4 rounded shadow">
+    <div className="bg-white p-4 rounded-xl shadow">
       <div className="flex justify-between mb-2">
         <div>
           <h2 className="text-md font-bold">
@@ -56,7 +56,7 @@ export default function PortfolioGraph() {
           </h2>
           <div className="text-xs text-gray-400">Portfolio value</div>
         </div>
-        <select className="px-2 py-1 border rounded text-sm">
+        <select className="px-4 text-gray-500 py-2 border rounded-lg text-sm mb-1">
           <option>This Year</option>
         </select>
       </div>
@@ -78,7 +78,7 @@ export default function PortfolioGraph() {
             <Line
               type="monotone"
               dataKey="value"
-              stroke="#8b5cf6"
+              stroke="#480090"
               strokeWidth={2}
             />
           </LineChart>
