@@ -13,13 +13,13 @@ export default function CumulativePnLCard() {
 
   return (
     <>
-      <div className="bg-white text-center p-6 rounded-xl shadow flex flex-col items-center justify-center h-full">
-        <p className="text-xl font-bold text-gray-600 mb-4 max-w-xs">
+      <div className="bg-white text-center p-6 rounded-xl flex flex-col items-center justify-center h-full">
+        <p className="text-[24px] font-semibold mb-4 leading-[30px] max-w-[300px]">
           For calculating cumulative PnL, please provide your starting balance
         </p>
         <button
           onClick={() => setShowModal(true)}
-          className="bg-[#480090] text-white rounded-lg px-4 py-2 hover:bg-purple-700"
+          className="bg-[#480090] text-white rounded-lg px-12 py-2 hover:bg-purple-700"
         >
           Set Balance
         </button>
@@ -42,23 +42,34 @@ export default function CumulativePnLCard() {
             Starting Balance
           </label>
           <input
-            type="number"
-            placeholder="Set your Price"
+            type="text"
+            inputMode="decimal"
+            placeholder="Set Your Balance"
             value={startingBalance}
-            onChange={(e) => setStartingBalance(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (/^\d*\.?\d*$/.test(value)) {
+                setStartingBalance(value);
+              }
+            }}
             className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring focus:ring-purple-300"
           />
         </div>
-
         <div>
           <label className="block text-sm font-medium text-gray-600 mb-1">
             Drawdown Balance
           </label>
           <input
-            type="number"
-            placeholder="Set your Price"
+            type="text"
+            inputMode="decimal"
+            placeholder="Set Your Drawdown Balance"
             value={drawdownBalance}
-            onChange={(e) => setDrawdownBalance(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (/^\d*\.?\d*$/.test(value)) {
+                setDrawdownBalance(value);
+              }
+            }}
             className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring focus:ring-purple-300"
           />
         </div>

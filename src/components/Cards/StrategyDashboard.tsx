@@ -4,7 +4,7 @@ import StatsSummary from './StatsSummary';
 import TortoiseIcon from '../../assets/Img/tortoise.png';
 import HareIcon from '../../assets/Img/hare.png';
 import BoltCircleIcon from '../../assets/Img/boltCircle.png';
-import { Calendar } from 'react-date-range';
+import { DateRange } from 'react-date-range';
 import { format } from 'date-fns';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
@@ -20,8 +20,14 @@ type Stat = { [key: string]: string | number };
 
 export default function StrategyDashboard() {
     const [strategy, setStrategy] = useState<Strategy>('Comfortable');
-    const [selectedDate, setSelectedDate] = useState('2025-05-01');
     const [showCalendar, setShowCalendar] = useState(false);
+    const [selectedRange, setSelectedRange] = useState<{
+        startDate: Date;
+        endDate: Date;
+    }>({
+        startDate: new Date('2025-05-01'),
+        endDate: new Date('2025-05-01')
+    });
     const [data, setData] = useState<{ day: number; profit: number }[]>([]);
     const [stats, setStats] = useState<Stat>({});
     const [loading, setLoading] = useState(true);
@@ -68,8 +74,9 @@ export default function StrategyDashboard() {
                     }
                 };
 
+                const key = format(selectedRange.startDate, 'yyyy-MM-dd');
                 await new Promise((r) => setTimeout(r, 500));
-                setStats(mockData[selectedDate] || {});
+                setStats(mockData[key] || {});
             } catch (err) {
                 setError('Failed to load stats');
             } finally {
@@ -78,11 +85,15 @@ export default function StrategyDashboard() {
         }
 
         fetchStats();
-    }, [selectedDate]);
+    }, [selectedRange]);
+
+    const displayRange =
+        selectedRange.startDate.toDateString() === selectedRange.endDate.toDateString()
+            ? format(selectedRange.startDate, 'MMMM d, yyyy')
+            : `${format(selectedRange.startDate, 'MMM d')} - ${format(selectedRange.endDate, 'MMM d')}`;
 
     return (
         <div className="px-10 mt-6">
-            {/* Strategy Filter & Date Picker */}
             <div className="flex justify-between items-end mb-0">
                 <div className="flex space-x-4">
                     {(['Comfortable', 'Modest', 'Aggressive'] as Strategy[]).map((s) => (
@@ -93,7 +104,8 @@ export default function StrategyDashboard() {
                             onClick={() => setStrategy(s)}
                         >
                             <span>
-                                {typeof strategyIcons[s] === 'string' ? (
+                                {typeof strategyIcons[s] === 'string' &&
+                                    strategyIcons[s] ? (
                                     <img src={strategyIcons[s]} alt={`${s} icon`} className="w-5 h-5" />
                                 ) : (
                                     strategyIcons[s]
@@ -106,33 +118,54 @@ export default function StrategyDashboard() {
                 <div className="relative inline-block text-left">
                     <button
                         onClick={() => setShowCalendar(!showCalendar)}
-                        className="px-4 text-gray-500 py-2 border rounded-lg text-sm mb-1 bg-white hover:bg-gray-50"
+                        className="relative w-[200px] text-[#9F9F9F] py-2 border rounded-lg text-sm mb-1 bg-white hover:bg-gray-50 text-center"
                     >
-                        {format(new Date(selectedDate), 'yyyy-MM-dd')}
+                        <span className="block">{displayRange}</span>
+                        <svg
+                            className="absolute right-3 bottom-2 w-4 h-4 text-[#9F9F9F] pointer-events-none"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
                     </button>
 
                     {showCalendar && (
                         <div className="absolute right-0 z-50 mt-2 bg-white shadow-lg rounded-xl p-3">
-                            <Calendar
-                                date={new Date(selectedDate)}
-                                onChange={(date) => {
-                                    setSelectedDate(format(date, 'yyyy-MM-dd'));
-                                    setShowCalendar(false);
+                            <DateRange
+                                editableDateInputs={true}
+                                onChange={(item) => {
+                                    const { startDate, endDate } = item.selection;
+                                    if (startDate && endDate) {
+                                        setSelectedRange({ startDate, endDate });
+                                    }
                                 }}
-                                color="#8b5cf6"
+                                moveRangeOnFirstSelection={false}
+                                ranges={[
+                                    {
+                                        startDate: selectedRange.startDate,
+                                        endDate: selectedRange.endDate,
+                                        key: 'selection',
+                                        color: '#8b5cf6'
+                                    }
+                                ]}
                             />
                         </div>
                     )}
                 </div>
             </div>
-            <div className="bg-white rounded-tl-none rounded-tr-xl rounded-b-xl shadow-md p-4 flex flex-col lg:flex-row gap-4">
+
+            <div className="bg-white rounded-tl-none rounded-tr-xl rounded-b-xl p-4 flex flex-col lg:flex-row gap-4">
                 <div className="flex-1">
                     <DailyPnLChart strategy={strategy} data={data} />
                 </div>
-                <div className="w-full lg:w-[40%]">
+                <div className="w-full lg:w-[42%]">
                     <StatsSummary
-                        title={`Stats for ${selectedDate}`}
-                        selectedDate={selectedDate}
+                        title={`Stats for ${format(selectedRange.startDate, 'yyyy-MM-dd')}`}
+                        selectedDate={format(selectedRange.startDate, 'yyyy-MM-dd')}
                         stats={stats}
                         loading={loading}
                         error={error}
@@ -150,4 +183,5 @@ export default function StrategyDashboard() {
         </div>
     );
 }
+
 

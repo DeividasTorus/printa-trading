@@ -48,13 +48,13 @@ export default function PortfolioGraph() {
   }, []);
 
   return (
-    <div className="bg-white p-4 rounded-xl shadow">
+    <div className="bg-white p-4 rounded-xl">
       <div className="flex justify-between mb-2">
-        <div>
-          <h2 className="text-md font-bold">
-            $0.3129 <span className="text-green-500 text-sm">(+0.23%)</span>
+        <div className='ml-[15px]'>
+          <h2 className="text-md font-bold text-[20px]">
+            $0.3129 <span className="text-[#4BCD18] text-[16px] ml-2">($0.0529 (+20.35%))</span>
           </h2>
-          <div className="text-xs text-gray-400">Portfolio value</div>
+          <div className="text-xs mt-1 text-gray-400">Portfolio value</div>
         </div>
         <select className="px-4 text-gray-500 py-2 border rounded-lg text-sm mb-1">
           <option>This Year</option>
@@ -72,9 +72,22 @@ export default function PortfolioGraph() {
       ) : (
         <ResponsiveContainer width="100%" height={200}>
           <LineChart data={data}>
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Tooltip />
+            <XAxis
+              dataKey="month"
+              tick={{ fill: '#9CA3AF', fontSize: 12 }}
+              tickMargin={16}
+            />
+            <YAxis
+              tickFormatter={(value) =>
+                value === 0 ? '0' : `${(value / 1000).toFixed(0)}k`
+              }
+              tick={{ fill: '#9CA3AF', fontSize: 12 }}
+              tickMargin={20}
+            />
+            <Tooltip
+              formatter={(value: number) => `$${value.toLocaleString()}`}
+              labelFormatter={(label: string) => `Month: ${label}`}
+            />
             <Line
               type="monotone"
               dataKey="value"

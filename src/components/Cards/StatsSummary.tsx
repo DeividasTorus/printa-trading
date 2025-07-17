@@ -4,7 +4,8 @@ import {
   Pie,
   Cell,
   Tooltip,
-  ResponsiveContainer
+  ResponsiveContainer,
+  PieLabelRenderProps
 } from 'recharts';
 
 import TotalPlIcon from '../../assets/Img/totalPlIcon.png';
@@ -24,10 +25,46 @@ export type StatsSummaryProps = {
   showCards?: boolean;
   rows?: { label: string; key: string }[];
   selectedDate?: string;
-  screenType?: 'strategy' | 'yearly'; // NEW
+  screenType?: 'strategy' | 'yearly';
 };
 
-const COLORS = ['#22c55e', '#ef4444']; // Green for win, Red for loss
+const COLORS = ['#4BCD18', '#FF5D5D']; // Green for win, Red for loss
+
+// ✅ Custom label to appear inside slices
+const renderInsideSliceLabel = ({
+  cx,
+  cy,
+  midAngle,
+  innerRadius,
+  outerRadius,
+  percent
+}: PieLabelRenderProps) => {
+  const RADIAN = Math.PI / 180;
+
+  const cxNum = Number(cx);
+  const cyNum = Number(cy);
+  const outerRadiusNum = Number(outerRadius);
+  const innerRadiusNum = Number(innerRadius ?? 0);
+
+  const radius = (outerRadiusNum + innerRadiusNum) / 2;
+
+  const x = cxNum + radius * Math.cos(-midAngle * RADIAN);
+  const y = cyNum + radius * Math.sin(-midAngle * RADIAN);
+
+  return (
+    <text
+      x={x}
+      y={y}
+      fill="black"
+      textAnchor="middle"
+      dominantBaseline="central"
+      fontSize={12}
+    >
+      {((percent ?? 0) * 100).toFixed(0)}%
+    </text>
+  );
+};
+
 
 export default function StatsSummary({
   title,
@@ -56,7 +93,7 @@ export default function StatsSummary({
     });
 
   return (
-    <div className="px-4 py-2 text-sm max-w-3xl mx-auto">
+    <div className="px-8 py-2 ml-4 border-l-[3px] text-sm max-w-3xl mx-auto">
       {loading ? (
         <p className="text-center text-gray-500">Loading...</p>
       ) : error ? (
@@ -65,14 +102,13 @@ export default function StatsSummary({
         <>
           <div className="mb-6">
             {screenType === 'strategy' && (
-              <h1 className="font-medium text-xl mb-6">
+              <h1 className="font-medium text-xl mb-4">
                 {formattedDate ? `${formattedDate} Statistics` : 'Statistics'}
               </h1>
             )}
             {screenType === 'yearly' && (
               <h1 className="font-medium text-xl mb-6">Total Overview</h1>
             )}
-
             <div className="flex items-center justify-between gap-6 flex-nowrap overflow-x-auto">
               <div className=''>
                 {stats.totalTrades !== undefined && (
@@ -87,27 +123,27 @@ export default function StatsSummary({
                         <PieChart>
                           <Pie
                             data={pieData}
-                            innerRadius={30}
                             outerRadius={50}
                             dataKey="value"
                             stroke="none"
+                            label={renderInsideSliceLabel}
+                            labelLine={false}
                           >
                             {pieData.map((entry, index) => (
                               <Cell key={`cell-${index}`} fill={COLORS[index]} />
                             ))}
                           </Pie>
-                          <Tooltip formatter={(value: number) => `${value}%`} />
                         </PieChart>
                       </ResponsiveContainer>
                     </div>
                   )}
                   {showPieChart && (
                     <div className="flex flex-col text-sm text-gray-700 shrink-0 ml-5 mt-6">
-                      <div className="flex items-center gap-2 mb-1">
+                      <div className="flex items-center gap-2 mb-1 text-[#9F9F9F]">
                         <span className="w-3 h-3 bg-green-500 rounded-full" />
                         Win
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 text-[#9F9F9F]">
                         <span className="w-3 h-3 bg-red-400 rounded-full" />
                         Loss
                       </div>
@@ -170,7 +206,7 @@ function StatCard({
   value: string | number;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center h-[140px] w-[110px] rounded border-[3px] ">
+    <div className="flex flex-col items-center justify-center mt-2 h-[150px] w-[120px] rounded border-[3px] ">
       <div className="text-2xl mb-1">{icon}</div>
       <p className="text-xs text-gray-500">{label}</p>
       <p className="text-lg font-bold">{value}</p>
@@ -180,12 +216,10 @@ function StatCard({
 
 function StatRow({ label, value }: { label: string; value?: string | number }) {
   return (
-    <div className="flex justify-between px-4 py-3">
-      <span className="text-gray-700">{label}</span>
-      <span className="font-semibold">{value ?? '-'}</span>
+    <div className="flex justify-between py-3 px-[20px] mx-4">
+      <span className="text-gray-700 font-semibold">{label}</span>
+      <span className="font-bold">{value ?? '-'}</span>
     </div>
   );
 }
-
-
 

@@ -77,7 +77,7 @@ export default function TradesSummary() {
   return (
     <div className="bg-white rounded-xl shadow px-6 py-5 overflow-x-auto">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-md font-semibold">Active Positions</h3>
+        <h2 className="text-lg font-semibold mb-4">Stats</h2>
          <select className="px-4 text-gray-500 py-2 border rounded-lg text-sm mb-1">
           <option>This Year</option>
         </select>

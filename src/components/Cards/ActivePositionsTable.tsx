@@ -80,7 +80,7 @@ export default function ActivePositionsTable() {
   }, []);
 
   return (
-    <div className="bg-white p-4 rounded-xl shadow mt-4">
+    <div className="bg-white p-4 rounded-xl mt-4">
       <div className="flex justify-between mb-2">
         <h2 className="text-md font-bold">Active Positions</h2>
         <select className="px-4 text-gray-500 py-2 border rounded-lg text-sm mb-1">
