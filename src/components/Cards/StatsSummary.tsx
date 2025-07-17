@@ -156,7 +156,7 @@ export default function StatsSummary({
                   <StatCard
                     icon={
                       <div className="rounded-full border-2 border-black p-3 px-4 my-4 flex items-center justify-center">
-                        <img src={TotalPlIcon} alt="Total PL" className="w-3 h-5" />
+                        <img src={TotalPlIcon} alt="Total PL" className="w-2 h-4" />
                       </div>
                     }
                     label="Total PL"
@@ -165,7 +165,7 @@ export default function StatsSummary({
                   <StatCard
                     icon={
                       <div className="bg-green-100 rounded-full p-3 my-4 flex items-center justify-center">
-                        <img src={ArrowUpIcon} alt="Profit" className="w-6 h-6" />
+                        <img src={ArrowUpIcon} alt="Profit" className="w-5 h-5" />
                       </div>
                     }
                     label="Profit"
@@ -174,7 +174,7 @@ export default function StatsSummary({
                   <StatCard
                     icon={
                       <div className="bg-red-100 rounded-full p-3 my-4 flex items-center justify-center">
-                        <img src={ArrowRise} alt="Loss" className="w-6 h-6" />
+                        <img src={ArrowRise} alt="Loss" className="w-5 h-5" />
                       </div>
                     }
                     label="Loss"
