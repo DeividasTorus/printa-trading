@@ -105,7 +105,7 @@ export default function StrategyDashboard() {
                         >
                             <span>
                                 {typeof strategyIcons[s] === 'string' &&
-                                    strategyIcons[s].match(/\.(png|jpe?g|svg)$/i) ? (
+                                    strategyIcons[s] ? (
                                     <img src={strategyIcons[s]} alt={`${s} icon`} className="w-5 h-5" />
                                 ) : (
                                     strategyIcons[s]
