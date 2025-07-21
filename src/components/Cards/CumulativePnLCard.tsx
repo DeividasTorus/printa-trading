@@ -5,6 +5,7 @@ export default function CumulativePnLCard() {
   const [showModal, setShowModal] = useState(false);
   const [startingBalance, setStartingBalance] = useState('');
   const [drawdownBalance, setDrawdownBalance] = useState('');
+  const [bonusInput, setBonusInput] = useState('');
 
   const handleSave = () => {
     console.log('Saved:', { startingBalance, drawdownBalance });
@@ -68,6 +69,24 @@ export default function CumulativePnLCard() {
               const value = e.target.value;
               if (/^\d*\.?\d*$/.test(value)) {
                 setDrawdownBalance(value);
+              }
+            }}
+            className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring focus:ring-purple-300"
+          />
+        </div>
+        <div className="mt-3">
+          <label className="block text-sm font-medium text-gray-600 mb-1">
+            Bonus Input
+          </label>
+          <input
+            type="text"
+            inputMode="decimal"
+            placeholder="Set Your Balance"
+            value={startingBalance}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (/^\d*\.?\d*$/.test(value)) {
+                setBonusInput(value);
               }
             }}
             className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring focus:ring-purple-300"

@@ -1,4 +1,3 @@
-// components/Charts/CumulativePnLChart.tsx
 import React, { useMemo } from 'react';
 import {
   ComposedChart,
@@ -11,11 +10,7 @@ import {
   Line,
   Legend,
 } from 'recharts';
-
-interface PnLData {
-  year: string;
-  pnl: number;
-}
+import { format } from 'date-fns';
 
 interface Trade {
   date: Date;
@@ -23,43 +18,40 @@ interface Trade {
 }
 
 interface Props {
-  pnlData: PnLData[]; // from filtered mockOverview
-  trades: Trade[];    // mockTrades for drawdown
+  trades: Trade[];
 }
 
-export default function CumulativePnLChart({ pnlData, trades }: Props) {
-  // Convert trades to cumulative drawdown per year
-  const drawdownByYear = useMemo(() => {
+export default function CumulativePnLChart({ trades }: Props) {
+  const chartData = useMemo(() => {
     const sorted = [...trades].sort((a, b) => a.date.getTime() - b.date.getTime());
+
     let cumulative = 0;
     let peak = 0;
-    const yearly: Record<string, { cumulative: number; drawdown: number }> = {};
+    const rawDrawdowns: number[] = [];
 
-    for (const { date, pnl } of sorted) {
+    // First pass: compute cumulative PnL and raw drawdowns
+    const base = sorted.map(({ date, pnl }) => {
       cumulative += pnl;
       peak = Math.max(peak, cumulative);
-      const year = date.getFullYear().toString();
-      const drawdown = parseFloat((peak - cumulative).toFixed(2));
+      const drawdown = Math.max(0, +(peak - cumulative).toFixed(2));
+      rawDrawdowns.push(drawdown);
+      return { date, pnl, cumulative };
+    });
 
-      if (!yearly[year]) {
-        yearly[year] = { cumulative, drawdown };
-      } else {
-        yearly[year].cumulative = cumulative;
-        yearly[year].drawdown = drawdown;
-      }
-    }
+    const maxDrawdown = Math.max(...rawDrawdowns) || 1; // avoid division by 0
 
-    return yearly;
+    // Second pass: normalize and center drawdown between 0–2000 (centered at 1000)
+    return base.map(({ date, cumulative }, i) => {
+      const normalizedDrawdown = (rawDrawdowns[i] / maxDrawdown) * 2000;
+      const centeredDrawdown = 1000 - normalizedDrawdown;
+
+      return {
+        dateLabel: format(date, 'MMM dd, yyyy'),
+        cumulative,
+        drawdown: centeredDrawdown,
+      };
+    });
   }, [trades]);
-
-  // Combine pnlData with drawdown data
-  const combinedData = useMemo(() => {
-    return pnlData.map(({ year, pnl }) => ({
-      year,
-      cumulative: pnl,
-      drawdown: drawdownByYear[year]?.drawdown || 0,
-    }));
-  }, [pnlData, drawdownByYear]);
 
   const formatTick = (value: number) => {
     if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`;
@@ -69,37 +61,40 @@ export default function CumulativePnLChart({ pnlData, trades }: Props) {
 
   return (
     <div className="bg-white p-4 rounded-xl shadow">
-      <h2 className="text-md font-semibold mb-4">Cumulative PnL With Trailing Drawdown</h2>
-      <ResponsiveContainer width="100%" height={300}>
-        <ComposedChart data={combinedData}>
+      <h2 className="text-md font-semibold mb-4">Daily Cumulative PnL with Trailing Drawdown</h2>
+      <ResponsiveContainer width="100%" height={360}>
+        <ComposedChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="year" tick={{ fill: '#6B7280', fontSize: 12 }} tickMargin={10} />
+          <XAxis
+            dataKey="dateLabel"
+            tick={{ fill: '#6B7280', fontSize: 11 }}
+            angle={-45}
+            height={70}
+            tickMargin={30}
+            interval={1}
+          />
           <YAxis
             yAxisId="left"
             tick={{ fill: '#6B7280', fontSize: 12 }}
             tickFormatter={formatTick}
-            tickMargin={10}
           />
           <YAxis
             yAxisId="right"
             orientation="right"
+            domain={[0, 2000]} // Fixed range
+            allowDataOverflow={false}
             tick={{ fill: '#36BFFA', fontSize: 12 }}
             tickFormatter={formatTick}
-            tickMargin={10}
           />
           <Tooltip />
-          <Legend
-            verticalAlign="bottom"
-            iconType="circle"
-            wrapperStyle={{ paddingTop: 20, fontSize: 12, color: '#6B7280', textAlign: 'center' }}
-          />
+          <Legend verticalAlign="bottom" wrapperStyle={{ paddingTop: 10 }} />
           <Bar
             yAxisId="left"
             dataKey="cumulative"
             name="Cumulative PnL"
             fill="#480090"
             radius={[4, 4, 0, 0]}
-            barSize={32}
+            barSize={12}
           />
           <Line
             yAxisId="right"
@@ -115,6 +110,11 @@ export default function CumulativePnLChart({ pnlData, trades }: Props) {
     </div>
   );
 }
+
+
+
+
+
 
 
 

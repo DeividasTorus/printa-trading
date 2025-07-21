@@ -131,7 +131,7 @@ const DDAnalysisChart: React.FC<Props> = ({ trades, initialCapital, stopAmount, 
   };
 
   return (
-    <div className="w-full h-[375px] bg-white p-4 rounded-xl shadow">
+    <div className="w-full h-[433px] bg-white p-4 rounded-xl shadow">
       <Line data={data} options={options} />
     </div>
   );

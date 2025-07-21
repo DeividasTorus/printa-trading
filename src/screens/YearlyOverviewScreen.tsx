@@ -305,7 +305,7 @@ export default function YearlyOverviewScreen() {
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 bg-gray-100 pt-8">
-                        <CumulativePnLChart pnlData={filtered} trades={mockTrades} />
+                        <CumulativePnLChart trades={mockTrades} />
                         <DDAnalysisChart
                             trades={mockTrades}
                             initialCapital={10000}

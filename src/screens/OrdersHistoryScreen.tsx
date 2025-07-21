@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { DateRange, Range, RangeKeyDict } from 'react-date-range';
+import { DateRange, RangeKeyDict } from 'react-date-range';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 
@@ -9,7 +9,7 @@ const formatDate = (date: Date) =>
     month: 'long',
     day: 'numeric',
   });
-  
+
 type Order = {
   date: string;
   time: string;
@@ -20,6 +20,18 @@ type Order = {
   direction: 'Buy' | 'Sell';
   pnl: string;
   realPnl: number;
+  progress: string;
+};
+
+const extractProgressParts = (progress: string): { label: string; percent: number } => {
+  const match = progress.match(/^(.+?)\s*-\s*(\d+)%$/);
+  if (match) {
+    return {
+      label: match[1].trim(),
+      percent: parseInt(match[2], 10),
+    };
+  }
+  return { label: progress, percent: 0 };
 };
 
 const OrderHistory = () => {
@@ -40,15 +52,15 @@ const OrderHistory = () => {
     const fetchData = async () => {
       try {
         const response: Order[] = [
-          { date: '2025.05.21', time: '20:45', symbol: 'SP500', open: 5895.5, close: 5895.5, change: -28.0, direction: 'Sell', pnl: '0.48%', realPnl: 12.35 },
-          { date: '2025.05.21', time: '20:30', symbol: 'SP500', open: 5895.5, close: 5895.5, change: -15.0, direction: 'Sell', pnl: '0.72%', realPnl: 25.72 },
-          { date: '2025.05.21', time: '20:25', symbol: 'SP500', open: 5895.5, close: 5895.5, change: -15.0, direction: 'Sell', pnl: '0.13%', realPnl: 4.50 },
-          { date: '2025.05.21', time: '20:15', symbol: 'NDX', open: 5795.5, close: 5892, change: 0.0, direction: 'Sell', pnl: '0.13%', realPnl: 8.25 },
-          { date: '2025.05.21', time: '20:00', symbol: 'SP500', open: 5892, close: 5892, change: 0.0, direction: 'Buy', pnl: '-0.12%', realPnl: -7.10 },
-          { date: '2025.05.20', time: '19:55', symbol: 'NDX', open: 5890, close: 5892, change: 0.0, direction: 'Buy', pnl: '-0.12%', realPnl: -6.88 },
-          { date: '2025.05.20', time: '19:50', symbol: 'NDX', open: 5890, close: 5890, change: 27.5, direction: 'Buy', pnl: '-0.12%', realPnl: -5.33 },
-          { date: '2025.05.20', time: '19:45', symbol: 'NDX', open: 5795.3, close: 5890, change: 27.5, direction: 'Buy', pnl: '-0.12%', realPnl: -3.42 },
-          { date: '2025.05.20', time: '19:40', symbol: 'SP500', open: 5795.3, close: 5890, change: 0.0, direction: 'Buy', pnl: '-0.12%', realPnl: -2.14 },
+          { date: '2025.05.21', time: '20:45', symbol: 'SP500', open: 5895.5, close: 5895.5, change: -28.0, direction: 'Sell', pnl: '0.48%', realPnl: 12.35, progress: 'TP1 - 60%' },
+          { date: '2025.05.21', time: '20:30', symbol: 'SP500', open: 5895.5, close: 5895.5, change: -15.0, direction: 'Sell', pnl: '0.72%', realPnl: 25.72, progress: 'TP1 - 50%' },
+          { date: '2025.05.21', time: '20:25', symbol: 'SP500', open: 5895.5, close: 5895.5, change: -15.0, direction: 'Sell', pnl: '0.13%', realPnl: 4.50, progress: 'TP1 - 30%' },
+          { date: '2025.05.21', time: '20:15', symbol: 'NDX', open: 5795.5, close: 5892, change: 0.0, direction: 'Sell', pnl: '0.13%', realPnl: 8.25, progress: 'TP2 - 80%' },
+          { date: '2025.05.21', time: '20:00', symbol: 'SP500', open: 5892, close: 5892, change: 0.0, direction: 'Buy', pnl: '-0.12%', realPnl: -7.10, progress: 'SL Hit - 100%' },
+          { date: '2025.05.20', time: '19:55', symbol: 'NDX', open: 5890, close: 5892, change: 0.0, direction: 'Buy', pnl: '-0.12%', realPnl: -6.88, progress: 'TP1 - 10%' },
+          { date: '2025.05.20', time: '19:50', symbol: 'NDX', open: 5890, close: 5890, change: 27.5, direction: 'Buy', pnl: '-0.12%', realPnl: -5.33, progress: 'TP1 - 20%' },
+          { date: '2025.05.20', time: '19:45', symbol: 'NDX', open: 5795.3, close: 5890, change: 27.5, direction: 'Buy', pnl: '-0.12%', realPnl: -3.42, progress: 'TP1 - 40%' },
+          { date: '2025.05.20', time: '19:40', symbol: 'SP500', open: 5795.3, close: 5890, change: 0.0, direction: 'Buy', pnl: '-0.12%', realPnl: -2.14, progress: 'TP1 - 90%' },
         ];
 
         await new Promise((res) => setTimeout(res, 500));
@@ -101,7 +113,7 @@ const OrderHistory = () => {
             const unselectedClasses = 'text-gray-400 border-gray-200 bg-[#FCFCFC]';
             const cornerClasses =
               label === 'Today' ? 'rounded-l-md' :
-              label === 'Year' ? 'rounded-r-md' : '';
+                label === 'Year' ? 'rounded-r-md' : '';
 
             return (
               <button
@@ -114,7 +126,6 @@ const OrderHistory = () => {
             );
           })}
 
-          {/* Calendar Picker Button */}
           <div className="relative inline-block ml-4">
             <button
               onClick={() => setShowPicker(!showPicker)}
@@ -167,24 +178,40 @@ const OrderHistory = () => {
                 <th className="px-4 py-2">Open</th>
                 <th className="px-4 py-2">Close</th>
                 <th className="px-4 py-2">Change</th>
+                <th className="px-4 py-2">Progress</th>
                 <th className="px-4 py-2">Direction</th>
                 <th className="px-4 py-2">PnL %</th>
                 <th className="px-4 py-2">PnL</th>
               </tr>
             </thead>
             <tbody>
-              {filteredOrders.map((order, idx) => (
-                <tr key={idx} className="bg-white hover:bg-gray-50">
-                  <td className="px-4 py-2 whitespace-nowrap">{`${order.date} | ${order.time}`}</td>
-                  <td className="px-4 py-2">{order.symbol}</td>
-                  <td className="px-4 py-2">{order.open}</td>
-                  <td className="px-4 py-2">{order.close}</td>
-                  <td className="px-4 py-2">{order.change.toFixed(2)}</td>
-                  <td className={`px-4 py-2 font-medium ${order.direction === 'Buy' ? 'text-green-500' : 'text-red-500'}`}>{order.direction}</td>
-                  <td className={`px-4 py-2 font-medium ${order.pnl.startsWith('-') ? 'text-red-500' : 'text-green-600'}`}>{order.pnl}</td>
-                  <td className={`px-4 py-2 font-medium ${order.realPnl < 0 ? 'text-red-500' : 'text-green-600'}`}>${order.realPnl.toFixed(2)}</td>
-                </tr>
-              ))}
+              {filteredOrders.map((order, idx) => {
+                const progress = extractProgressParts(order.progress);
+                return (
+                  <tr key={idx} className="bg-white hover:bg-gray-50">
+                    <td className="px-4 py-2 whitespace-nowrap">{`${order.date} | ${order.time}`}</td>
+                    <td className="px-4 py-2">{order.symbol}</td>
+                    <td className="px-4 py-2">{order.open}</td>
+                    <td className="px-4 py-2">{order.close}</td>
+                    <td className="px-4 py-2">{order.change.toFixed(2)}</td>
+                    <td className="py-2">
+                      <div className="text-xs text-gray-700 mb-1">{progress.label}</div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-[60px] bg-gray-200 rounded h-2">
+                          <div
+                            className={`h-2 rounded ${progress.percent === 100 ? 'bg-green-500' : 'bg-yellow-400'}`}
+                            style={{ width: `${progress.percent}%` }}
+                          ></div>
+                        </div>
+                        <span className="text-xs text-gray-600">{progress.percent}%</span>
+                      </div>
+                    </td>
+                    <td className={`px-4 py-2 font-medium ${order.direction === 'Buy' ? 'text-green-500' : 'text-red-500'}`}>{order.direction}</td>
+                    <td className={`px-4 py-2 font-medium ${order.pnl.startsWith('-') ? 'text-red-500' : 'text-green-600'}`}>{order.pnl}</td>
+                    <td className={`px-4 py-2 font-medium ${order.realPnl < 0 ? 'text-red-500' : 'text-green-600'}`}>${order.realPnl.toFixed(2)}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )}

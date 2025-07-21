@@ -28,9 +28,8 @@ export type StatsSummaryProps = {
   screenType?: 'strategy' | 'yearly';
 };
 
-const COLORS = ['#4BCD18', '#FF5D5D']; // Green for win, Red for loss
+const COLORS = ['#4BCD18', '#FF5D5D'];
 
-// ✅ Custom label to appear inside slices
 const renderInsideSliceLabel = ({
   cx,
   cy,
@@ -40,14 +39,12 @@ const renderInsideSliceLabel = ({
   percent
 }: PieLabelRenderProps) => {
   const RADIAN = Math.PI / 180;
-
   const cxNum = Number(cx);
   const cyNum = Number(cy);
   const outerRadiusNum = Number(outerRadius);
   const innerRadiusNum = Number(innerRadius ?? 0);
 
   const radius = (outerRadiusNum + innerRadiusNum) / 2;
-
   const x = cxNum + radius * Math.cos(-midAngle * RADIAN);
   const y = cyNum + radius * Math.sin(-midAngle * RADIAN);
 
@@ -64,7 +61,6 @@ const renderInsideSliceLabel = ({
     </text>
   );
 };
-
 
 export default function StatsSummary({
   title,
@@ -93,7 +89,7 @@ export default function StatsSummary({
     });
 
   return (
-    <div className="px-8 py-2 ml-4 border-l-[3px] text-sm max-w-3xl mx-auto">
+    <div className="px-4 sm:px-8 py-2 border-l-[3px] text-sm w-full overflow-x-hidden">
       {loading ? (
         <p className="text-center text-gray-500">Loading...</p>
       ) : error ? (
@@ -109,34 +105,37 @@ export default function StatsSummary({
             {screenType === 'yearly' && (
               <h1 className="font-medium text-xl mb-6">Total Overview</h1>
             )}
-            <div className="flex items-center justify-between gap-6 flex-nowrap overflow-x-auto">
-              <div className=''>
+
+            <div className="flex flex-wrap items-start justify-start gap-6">
+              <div>
                 {stats.totalTrades !== undefined && (
                   <p className="mb-4 text-[16px]">
                     Total Trades: <span className="font-bold">{stats.totalTrades}</span>
                   </p>
                 )}
                 <div className='flex'>
-                  {showPieChart && (
+                  <div className="flex flex-col sm:flex-row gap-4 items-center shrink-0">
                     <div className="w-[100px] h-[100px] shrink-0">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={pieData}
-                            outerRadius={50}
-                            dataKey="value"
-                            stroke="none"
-                            label={renderInsideSliceLabel}
-                            labelLine={false}
-                          >
-                            {pieData.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={COLORS[index]} />
-                            ))}
-                          </Pie>
-                        </PieChart>
-                      </ResponsiveContainer>
+                      {showPieChart && (
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={pieData}
+                              outerRadius={50}
+                              dataKey="value"
+                              stroke="none"
+                              label={renderInsideSliceLabel}
+                              labelLine={false}
+                            >
+                              {pieData.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={COLORS[index]} />
+                              ))}
+                            </Pie>
+                          </PieChart>
+                        </ResponsiveContainer>
+                      )}
                     </div>
-                  )}
+                  </div>
                   {showPieChart && (
                     <div className="flex flex-col text-sm text-gray-700 shrink-0 ml-5 mt-6">
                       <div className="flex items-center gap-2 mb-1 text-[#9F9F9F]">
@@ -151,40 +150,45 @@ export default function StatsSummary({
                   )}
                 </div>
               </div>
-              {showCards && (
-                <div className="flex gap-2 shrink-0">
-                  <StatCard
-                    icon={
-                      <div className="rounded-full border-2 border-black p-3 px-4 my-4 flex items-center justify-center">
-                        <img src={TotalPlIcon} alt="Total PL" className="w-2 h-4" />
-                      </div>
-                    }
-                    label="Total PL"
-                    value={stats.totalPL}
-                  />
-                  <StatCard
-                    icon={
-                      <div className="bg-green-100 rounded-full p-3 my-4 flex items-center justify-center">
-                        <img src={ArrowUpIcon} alt="Profit" className="w-5 h-5" />
-                      </div>
-                    }
-                    label="Profit"
-                    value={stats.profit}
-                  />
-                  <StatCard
-                    icon={
-                      <div className="bg-red-100 rounded-full p-3 my-4 flex items-center justify-center">
-                        <img src={ArrowRise} alt="Loss" className="w-5 h-5" />
-                      </div>
-                    }
-                    label="Loss"
-                    value={stats.loss}
-                  />
-                </div>
-              )}
+
+              {/* Stats Cards */}
+              <div className="flex flex-wrap gap-2">
+                {showCards && (
+                  <>
+                    <StatCard
+                      icon={
+                        <div className="rounded-full border-2 border-black p-3 px-4 my-4 flex items-center justify-center">
+                          <img src={TotalPlIcon} alt="Total PL" className="w-3 h-5" />
+                        </div>
+                      }
+                      label="Total PL"
+                      value={stats.totalPL}
+                    />
+                    <StatCard
+                      icon={
+                        <div className="bg-green-100 rounded-full p-3 my-4 flex items-center justify-center">
+                          <img src={ArrowUpIcon} alt="Profit" className="w-6 h-6" />
+                        </div>
+                      }
+                      label="Profit"
+                      value={stats.profit}
+                    />
+                    <StatCard
+                      icon={
+                        <div className="bg-red-100 rounded-full p-3 my-4 flex items-center justify-center">
+                          <img src={ArrowRise} alt="Loss" className="w-6 h-6" />
+                        </div>
+                      }
+                      label="Loss"
+                      value={stats.loss}
+                    />
+                  </>
+                )}
+              </div>
             </div>
           </div>
 
+          {/* Rows */}
           <div className="bg-white border rounded-lg divide-y text-sm">
             {rows.map((row) => (
               <StatRow key={row.key} label={row.label} value={stats[row.key]} />
@@ -206,7 +210,7 @@ function StatCard({
   value: string | number;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center mt-2 h-[150px] w-[120px] rounded border-[3px] ">
+    <div className="flex flex-col items-center justify-center mt-2 h-[150px] w-[120px] rounded border-[3px] shrink-0">
       <div className="text-2xl mb-1">{icon}</div>
       <p className="text-xs text-gray-500">{label}</p>
       <p className="text-lg font-bold">{value}</p>
@@ -222,4 +226,5 @@ function StatRow({ label, value }: { label: string; value?: string | number }) {
     </div>
   );
 }
+
 

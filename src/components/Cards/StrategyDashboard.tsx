@@ -93,8 +93,8 @@ export default function StrategyDashboard() {
             : `${format(selectedRange.startDate, 'MMM d')} - ${format(selectedRange.endDate, 'MMM d')}`;
 
     return (
-        <div className="px-10 mt-6">
-            <div className="flex justify-between items-end mb-0">
+        <div className="px-4 md:px-10 mt-6 overflow-x-hidden w-full">
+            <div className="flex justify-between items-end mb-0 flex-wrap gap-2">
                 <div className="flex space-x-4">
                     {(['Comfortable', 'Modest', 'Aggressive'] as Strategy[]).map((s) => (
                         <button
@@ -105,7 +105,7 @@ export default function StrategyDashboard() {
                         >
                             <span>
                                 {typeof strategyIcons[s] === 'string' &&
-                                    strategyIcons[s] ? (
+                                    strategyIcons[s].match(/\.(png|jpe?g|svg)$/i) ? (
                                     <img src={strategyIcons[s]} alt={`${s} icon`} className="w-5 h-5" />
                                 ) : (
                                     strategyIcons[s]
@@ -158,11 +158,12 @@ export default function StrategyDashboard() {
                 </div>
             </div>
 
-            <div className="bg-white rounded-tl-none rounded-tr-xl rounded-b-xl p-4 flex flex-col lg:flex-row gap-4">
-                <div className="flex-1">
+            {/* FIXED RESPONSIVE WRAPPING SECTION */}
+            <div className="bg-white rounded-tl-none rounded-tr-xl rounded-b-xl p-4 flex flex-wrap gap-4 overflow-x-hidden">
+                <div className="flex-1 min-w-[300px]">
                     <DailyPnLChart strategy={strategy} data={data} />
                 </div>
-                <div className="w-full lg:w-[42%]">
+                <div className="w-full sm:w-[100%] md:w-[48%] lg:w-[42%] min-w-[300px]">
                     <StatsSummary
                         title={`Stats for ${format(selectedRange.startDate, 'yyyy-MM-dd')}`}
                         selectedDate={format(selectedRange.startDate, 'yyyy-MM-dd')}
@@ -183,5 +184,6 @@ export default function StrategyDashboard() {
         </div>
     );
 }
+
 
 
