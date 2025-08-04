@@ -35,7 +35,7 @@ function generateSimulations(baseData: YearOverview[]) {
 
 // Custom legend with spacing and dot icons
 const CustomLegend = () => (
-  <div style={{ display: 'flex', justifyContent: 'center', gap: '80px', paddingTop: 20 }}>
+  <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', paddingTop: 20 }}>
     <span style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#9F9F9F'  }}>
       <div style={{ width: 10, height: 10, background: '#22c55e', borderRadius: '50%', marginRight: 5}}></div>
       Conservative

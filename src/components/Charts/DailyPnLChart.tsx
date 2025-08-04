@@ -27,9 +27,11 @@ export default function DailyPnLChart({ strategy, data }: Props) {
 
   return (
     <div className="w-full">
-      <h2 className="text-lg font-semibold mb-2">Daily PnL - {strategy}</h2>
-
-      <div className="flex justify-center space-x-[120px] text-xs ml-[500px] mt-[-25px] mb-6 text-gray-500">
+      <h2 className="hidden md:block text-lg font-semibold mb-2">
+        Daily PnL - {strategy}
+      </h2>
+      {/* Desktop legend (top-right) */}
+      <div className="hidden md:flex justify-center space-x-[120px] text-xs ml-[500px] mt-[-25px] mb-6 text-gray-500">
         <div className="flex items-center space-x-1">
           <span className="w-2 h-2 rounded-full bg-purple-800"></span>
           <span className="text-[#9F9F9F]">Profit</span>
@@ -39,7 +41,6 @@ export default function DailyPnLChart({ strategy, data }: Props) {
           <span className="text-[#9F9F9F]">Loss</span>
         </div>
       </div>
-
       <ResponsiveContainer width="100%" height={420}>
         <BarChart data={data}>
           <YAxis domain={[-maxAbsProfit, maxAbsProfit]} />
@@ -76,6 +77,16 @@ export default function DailyPnLChart({ strategy, data }: Props) {
           </Bar>
         </BarChart>
       </ResponsiveContainer>
+      <div className="flex md:hidden justify-center space-x-6 text-xs text-gray-500">
+        <div className="flex items-center mr-16 space-x-1">
+          <span className="w-2 h-2 rounded-full bg-purple-800"></span>
+          <span className="text-[#9F9F9F]">Profit</span>
+        </div>
+        <div className="flex items-center space-x-1">
+          <span className="w-2 h-2 rounded-full bg-purple-300"></span>
+          <span className="text-[#9F9F9F]">Loss</span>
+        </div>
+      </div>
     </div>
   );
 }

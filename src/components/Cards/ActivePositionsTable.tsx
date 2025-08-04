@@ -85,6 +85,11 @@ export default function ActivePositionsTable() {
         <h2 className="text-md font-bold">Active Positions</h2>
         <select className="px-4 text-gray-500 py-2 border rounded-lg text-sm mb-1">
           <option>This Year</option>
+          <option>Quarter</option>
+          <option>Month</option>
+          <option>Week</option>
+          <option>Yestarday</option>
+          <option>Today</option>
         </select>
       </div>
 
@@ -93,58 +98,60 @@ export default function ActivePositionsTable() {
       ) : error ? (
         <div className="text-sm text-red-500">{error}</div>
       ) : (
-        <table className="min-w-full text-sm">
-          <thead>
-            <tr className="bg-gray-100 text-left">
-              <th className="p-2">Date</th>
-              <th className="p-2">Symbol</th>
-              <th className="p-2">Quantity</th>
-              <th className="p-2">Open Price</th>
-              <th className="p-2">Close Price</th>
-              <th className="p-2">Progress</th>
-              <th className="p-2">Change</th>
-              <th className="p-2">Direction</th>
-              <th className="p-2">PnL%</th>
-            </tr>
-          </thead>
-          <tbody>
-            {positions.map((pos, idx) => {
-              const progress = extractProgressParts(pos.progress);
-              return (
-                <tr key={idx} className="border-t">
-                  <td className="p-2">{pos.date}</td>
-                  <td className="p-2">{pos.symbol}</td>
-                  <td className="p-2">{pos.quantity}</td>
-                  <td className="p-2">{pos.openPrice}</td>
-                  <td className="p-2">{pos.closePrice}</td>
-                  <td className="p-2">
-                    <div className="text-xs text-gray-700 mb-1">{progress.label}</div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-[60px] bg-gray-200 rounded h-2">
-                        <div
-                          className={`h-2 rounded ${progress.percent === 100 ? 'bg-green-500' : 'bg-yellow-400'
-                            }`}
-                          style={{ width: `${progress.percent}%` }}
-                        ></div>
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-sm">
+            <thead>
+              <tr className="bg-gray-100 text-left">
+                <th className="p-2">Date</th>
+                <th className="p-2">Symbol</th>
+                <th className="p-2">Quantity</th>
+                <th className="p-2">Open Price</th>
+                <th className="p-2">Close Price</th>
+                <th className="p-2">Progress</th>
+                <th className="p-2">Change</th>
+                <th className="p-2">Direction</th>
+                <th className="p-2">PnL%</th>
+              </tr>
+            </thead>
+            <tbody>
+              {positions.map((pos, idx) => {
+                const progress = extractProgressParts(pos.progress);
+                return (
+                  <tr key={idx} className="border-t">
+                    <td className="p-2">{pos.date}</td>
+                    <td className="p-2">{pos.symbol}</td>
+                    <td className="p-2">{pos.quantity}</td>
+                    <td className="p-2">{pos.openPrice}</td>
+                    <td className="p-2">{pos.closePrice}</td>
+                    <td className="p-2">
+                      <div className="text-xs text-gray-700 mb-1">{progress.label}</div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-[60px] bg-gray-200 rounded h-2">
+                          <div
+                            className={`h-2 rounded ${progress.percent === 100 ? 'bg-green-500' : 'bg-yellow-400'}`}
+                            style={{ width: `${progress.percent}%` }}
+                          ></div>
+                        </div>
+                        <span className="text-xs text-gray-600">{progress.percent}%</span>
                       </div>
-                      <span className="text-xs text-gray-600">{progress.percent}%</span>
-                    </div>
-                  </td>
-                  <td className={`p-2 ${pos.change < 0 ? 'text-green-500' : 'text-red-500'}`}>
-                    {pos.change}
-                  </td>
-                  <td className={`p-2 ${pos.direction === 'Sell' ? 'text-red-500' : 'text-green-500'}`}>
-                    {pos.direction}
-                  </td>
-                  <td className={`p-2 ${pos.pnl >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                    {pos.pnl.toFixed(2)}%
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                    </td>
+                    <td className={`p-2 ${pos.change < 0 ? 'text-green-500' : 'text-red-500'}`}>
+                      {pos.change}
+                    </td>
+                    <td className={`p-2 ${pos.direction === 'Sell' ? 'text-red-500' : 'text-green-500'}`}>
+                      {pos.direction}
+                    </td>
+                    <td className={`p-2 ${pos.pnl >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                      {pos.pnl.toFixed(2)}%
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
 }
+

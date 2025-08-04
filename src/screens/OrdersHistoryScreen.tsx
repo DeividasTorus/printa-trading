@@ -141,8 +141,8 @@ const OrderHistory = () => {
                   onChange={(ranges: RangeKeyDict) => setDateRange([ranges.selection])}
                   moveRangeOnFirstSelection={false}
                   ranges={dateRange}
-                  months={2}
-                  direction="horizontal"
+                  months={window.innerWidth < 768 ? 1 : 2}
+                  direction={window.innerWidth < 768 ? 'vertical' : 'horizontal'}
                   rangeColors={['#8b5cf6']}
                 />
                 <div className="flex justify-end gap-3 mt-4">

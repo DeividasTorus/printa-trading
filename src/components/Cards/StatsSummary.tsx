@@ -7,10 +7,9 @@ import {
   ResponsiveContainer,
   PieLabelRenderProps
 } from 'recharts';
-
 import TotalPlIcon from '../../assets/Img/totalPlIcon.png';
-import ArrowUpIcon from '../../assets/Img/arrowUp.png';
-import ArrowRise from '../../assets/Img/ArrowRise.png';
+import ArrowUpIcon from '../../assets/Img/arrowUp.svg?react';
+import ArrowRise from '../../assets/Img/ArrowRise.svg?react';
 
 export type Stat = {
   [key: string]: string | number;
@@ -89,7 +88,7 @@ export default function StatsSummary({
     });
 
   return (
-    <div className="px-4 sm:px-8 py-2 border-l-[3px] text-sm w-full overflow-x-hidden">
+    <div className="px-4 sm:px-8 py-2 sm:border-l-[3px] sm:border-t-[0px] border-t-[2px] text-sm w-full overflow-x-hidden">
       {loading ? (
         <p className="text-center text-gray-500">Loading...</p>
       ) : error ? (
@@ -115,25 +114,23 @@ export default function StatsSummary({
                 )}
                 <div className='flex'>
                   <div className="flex flex-col sm:flex-row gap-4 items-center shrink-0">
-                    <div className="w-[100px] h-[100px] shrink-0">
-                      {showPieChart && (
-                        <ResponsiveContainer width="100%" height="100%">
-                          <PieChart>
-                            <Pie
-                              data={pieData}
-                              outerRadius={50}
-                              dataKey="value"
-                              stroke="none"
-                              label={renderInsideSliceLabel}
-                              labelLine={false}
-                            >
-                              {pieData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[index]} />
-                              ))}
-                            </Pie>
-                          </PieChart>
-                        </ResponsiveContainer>
-                      )}
+                    <div className="w-[220px] sm:w-[140px] aspect-square shrink-0">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={pieData}
+                            outerRadius="80%"  // use percentage for better scaling
+                            dataKey="value"
+                            stroke="none"
+                            label={renderInsideSliceLabel}
+                            labelLine={false}
+                          >
+                            {pieData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={COLORS[index]} />
+                            ))}
+                          </Pie>
+                        </PieChart>
+                      </ResponsiveContainer>
                     </div>
                   </div>
                   {showPieChart && (
@@ -154,35 +151,37 @@ export default function StatsSummary({
               {/* Stats Cards */}
               <div className="flex flex-wrap gap-2">
                 {showCards && (
-                  <>
-                    <StatCard
-                      icon={
-                        <div className="rounded-full border-2 border-black p-3 px-4 my-4 flex items-center justify-center">
-                          <img src={TotalPlIcon} alt="Total PL" className="w-3 h-5" />
-                        </div>
-                      }
-                      label="Total PL"
-                      value={stats.totalPL}
-                    />
-                    <StatCard
-                      icon={
-                        <div className="bg-green-100 rounded-full p-3 my-4 flex items-center justify-center">
-                          <img src={ArrowUpIcon} alt="Profit" className="w-6 h-6" />
-                        </div>
-                      }
-                      label="Profit"
-                      value={stats.profit}
-                    />
-                    <StatCard
-                      icon={
-                        <div className="bg-red-100 rounded-full p-3 my-4 flex items-center justify-center">
-                          <img src={ArrowRise} alt="Loss" className="w-6 h-6" />
-                        </div>
-                      }
-                      label="Loss"
-                      value={stats.loss}
-                    />
-                  </>
+                  <div className="w-full">
+                    <div className="grid grid-cols-3 gap-5 sm:flex sm:flex-wrap sm:gap-2">
+                      <StatCard
+                        icon={
+                          <div className="rounded-full border-2 border-black p-3 px-4 my-4 flex items-center justify-center">
+                            <img src={TotalPlIcon} alt="Total PL" className="w-2 h-4" />
+                          </div>
+                        }
+                        label="Total PL"
+                        value={stats.totalPL}
+                      />
+                      <StatCard
+                        icon={
+                          <div className="bg-green-100 rounded-full p-3 my-4 flex items-center justify-center text-green-500">
+                            <ArrowUpIcon className="w-5 h-5" />
+                          </div>
+                        }
+                        label="Profit"
+                        value={stats.profit}
+                      />
+                      <StatCard
+                        icon={
+                          <div className="bg-red-100 rounded-full p-3 my-4 flex items-center justify-center text-red-500">
+                            <ArrowRise className="w-5 h-5" />
+                          </div>
+                        }
+                        label="Loss"
+                        value={stats.loss}
+                      />
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
@@ -210,10 +209,11 @@ function StatCard({
   value: string | number;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center mt-2 h-[150px] w-[120px] rounded border-[3px] shrink-0">
+    <div className="flex flex-col items-center justify-center mt-2 h-[150px] sm:w-[120px] w-[100px] rounded border-[3px] shrink-0">
       <div className="text-2xl mb-1">{icon}</div>
       <p className="text-xs text-gray-500">{label}</p>
-      <p className="text-lg font-bold">{value}</p>
+      <p className="sm:text-lg font-bold">{value}</p>
+      
     </div>
   );
 }
